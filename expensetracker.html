@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Expense Tracker</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f7f2;
+            color: #17201a;
+            min-height: 100vh;
+            padding: 45px 20px;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+
+        /* Header */
+
+        .heading {
+            margin-bottom: 35px;
+        }
+
+        .heading p {
+            color: #166534;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .heading h1 {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .heading span {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+
+        /* Dashboard */
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .card {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        }
+
+        .card p {
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card h2 {
+            font-size: 27px;
+        }
+
+        .budget h2 {
+            color: #166534;
+        }
+
+        .expense h2 {
+            color: #dc2626;
+        }
+
+        .remaining h2 {
+            color: #15803d;
+        }
+
+
+        /* Main */
+
+        .main {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 22px;
+        }
+
+        .box {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 26px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+        }
+
+        .box h2 {
+            font-size: 20px;
+            margin-bottom: 22px;
+        }
+
+
+        /* Form */
+
+        label {
+            display: block;
+            color: #374151;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 16px;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px 12px;
+            background-color: #fafafa;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            color: #17201a;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #166534;
+            background-color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 22px;
+            border: none;
+            border-radius: 7px;
+            background-color: #166534;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #14532d;
+        }
+
+
+        /* Expense List */
+
+        .expense-list {
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 15px;
+
+            margin-bottom: 10px;
+
+            background-color: #fafafa;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 9px;
+
+            transition: 0.2s;
+        }
+
+        .expense-item:hover {
+            border-color: #bbf7d0;
+            background-color: #f7fff9;
+        }
+
+        .expense-info h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .expense-info p {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .expense-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .expense-amount {
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .delete-btn {
+            width: auto;
+            margin: 0;
+            padding: 7px 10px;
+            background-color: #fee2e2;
+            color: #b91c1c;
+            font-size: 11px;
+        }
+
+        .delete-btn:hover {
+            background-color: #fecaca;
+        }
+
+        .empty {
+            text-align: center;
+            color: #9ca3af;
+            padding: 55px 10px;
+            font-size: 14px;
+        }
+
+
+        /* Warning */
+
+        .warning {
+            display: none;
+            margin-top: 15px;
+            padding: 11px;
+            border-radius: 7px;
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            font-size: 12px;
+            text-align: center;
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 768px) {
+
+            body {
+                padding: 30px 15px;
+            }
+
+            .heading h1 {
+                font-size: 32px;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .expense-item {
+                align-items: flex-start;
+            }
+
+            .expense-right {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 8px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+
+        <!-- Heading -->
+
+        <div class="heading">
+
+            <p>PERSONAL FINANCE</p>
+
+            <h1>Expense Tracker</h1>
+
+            <span>
+                Track your expenses and manage your monthly budget
+            </span>
+
+        </div>
+
+
+        <!-- Dashboard -->
+
+        <div class="dashboard">
+
+
+            <div class="card budget">
+
+                <p>MONTHLY BUDGET</p>
+
+                <h2 id="budgetAmount">
+                    ₹0
+                </h2>
+
+            </div>
+
+
+            <div class="card expense">
+
+                <p>TOTAL EXPENSE</p>
+
+                <h2 id="totalExpense">
+                    ₹0
+                </h2>
+
+            </div>
+
+
+            <div class="card remaining">
+
+                <p>REMAINING</p>
+
+                <h2 id="remainingAmount">
+                    ₹0
+                </h2>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- Main Section -->
+
+        <div class="main">
+
+
+            <!-- Add Expense -->
+
+            <div class="box">
+
+                <h2>Add New Expense</h2>
+
+
+                <label>
+                    Monthly Budget
+                </label>
+
+                <input
+                    type="number"
+                    id="budget"
+                    placeholder="Enter your budget"
+                >
+
+
+                <label>
+                    Expense Name
+                </label>
+
+                <input
+                    type="text"
+                    id="expenseName"
+                    placeholder="e.g. Groceries"
+                >
+
+
+                <label>
+                    Category
+                </label>
+
+                <select id="category">
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    <option value="Food">
+                        Food
+                    </option>
+
+                    <option value="Travel">
+                        Travel
+                    </option>
+
+                    <option value="Shopping">
+                        Shopping
+                    </option>
+
+                    <option value="Education">
+                        Education
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+
+                <label>
+                    Amount
+                </label>
+
+                <input
+                    type="number"
+                    id="amount"
+                    placeholder="Enter amount"
+                >
+
+
+                <button onclick="addExpense()">
+                    + Add Expense
+                </button>
+
+
+                <div
+                    class="warning"
+                    id="warning"
+                >
+
+                    Your expenses have exceeded your budget!
+
+                </div>
+
+
+            </div>
+
+
+            <!-- Expense List -->
+
+            <div class="box">
+
+                <h2>Recent Expenses</h2>
+
+
+                <div
+                    class="expense-list"
+                    id="expenseList"
+                >
+
+                    <div class="empty">
+
+                        No expenses added yet.
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+
+        // Array to store expenses
+
+        let expenses = [];
+
+
+        // Add Expense
+
+        function addExpense() {
+
+
+            let budget =
+                parseFloat(
+                    document.getElementById("budget").value
+                );
+
+
+            let expenseName =
+                document.getElementById("expenseName").value;
+
+
+            let category =
+                document.getElementById("category").value;
+
+
+            let amount =
+                parseFloat(
+                    document.getElementById("amount").value
+                );
+
+
+            // Validation
+
+            if (isNaN(budget) || budget <= 0) {
+
+                alert("Please enter a valid budget.");
+
+                return;
+
+            }
+
+
+            if (expenseName == "") {
+
+                alert("Please enter expense name.");
+
+                return;
+
+            }
+
+
+            if (category == "") {
+
+                alert("Please select a category.");
+
+                return;
+
+            }
+
+
+            if (isNaN(amount) || amount <= 0) {
+
+                alert("Please enter a valid amount.");
+
+                return;
+
+            }
+
+
+            // Create expense
+
+            let expense = {
+
+                name: expenseName,
+
+                category: category,
+
+                amount: amount
+
+            };
+
+
+            // Add expense to array
+
+            expenses.push(expense);
+
+
+            // Show budget
+
+            document.getElementById("budgetAmount").innerHTML =
+                "₹" + budget.toFixed(2);
+
+
+            // Clear input fields
+
+            document.getElementById("expenseName").value = "";
+
+            document.getElementById("category").value = "";
+
+            document.getElementById("amount").value = "";
+
+
+            // Display expenses
+
+            showExpenses();
+
+        }
+
+
+        // Display Expenses
+
+        function showExpenses() {
+
+
+            let list =
+                document.getElementById("expenseList");
+
+
+            let total = 0;
+
+
+            list.innerHTML = "";
+
+
+            for (
+                let i = 0;
+                i < expenses.length;
+                i++
+            ) {
+
+
+                total =
+                    total + expenses[i].amount;
+
+
+                list.innerHTML +=
+
+                    '<div class="expense-item">' +
+
+                        '<div class="expense-info">' +
+
+                            '<h3>' +
+                                expenses[i].name +
+                            '</h3>' +
+
+                            '<p>' +
+                                expenses[i].category +
+                            '</p>' +
+
+                        '</div>' +
+
+
+                        '<div class="expense-right">' +
+
+                            '<span class="expense-amount">' +
+
+                                "₹" +
+                                expenses[i].amount.toFixed(2) +
+
+                            '</span>' +
+
+
+                            '<button ' +
+
+                                'class="delete-btn" ' +
+
+                                'onclick="deleteExpense(' +
+                                    i +
+                                ')">' +
+
+                                'Delete' +
+
+                            '</button>' +
+
+                        '</div>' +
+
+                    '</div>';
+
+            }
+
+
+            // Total expense
+
+            document.getElementById("totalExpense").innerHTML =
+                "₹" + total.toFixed(2);
+
+
+            // Remaining budget
+
+            let budget =
+                parseFloat(
+                    document.getElementById("budget").value
+                );
+
+
+            let remaining =
+                budget - total;
+
+
+            document.getElementById("remainingAmount").innerHTML =
+                "₹" + remaining.toFixed(2);
+
+
+            // Budget warning
+
+            if (remaining < 0) {
+
+                document.getElementById("warning").style.display =
+                    "block";
+
+            }
+
+            else {
+
+                document.getElementById("warning").style.display =
+                    "none";
+
+            }
+
+        }
+
+
+        // Delete Expense
+
+        function deleteExpense(index) {
+
+
+            expenses.splice(index, 1);
+
+
+            showExpenses();
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
